@@ -25,16 +25,12 @@ export type ResolvedRef = ResolvedIssue | ResolvedPull;
 
 const octokit = new Octokit();
 
-async function fetchPull(num: number): Promise<ResolvedPull | null> {
-    const { status, data } = await octokit.rest.pulls.get({
+async function fetchPull(num: number): Promise<ResolvedPull> {
+    const { data } = await octokit.rest.pulls.get({
         owner: REPO_OWNER,
         repo: REPO_NAME,
         pull_number: num,
     });
-
-    if (status !== 200) {
-        return null;
-    }
 
     return {
         kind: "pull",
@@ -49,16 +45,12 @@ async function fetchPull(num: number): Promise<ResolvedPull | null> {
     };
 }
 
-async function fetchIssue(num: number): Promise<ResolvedIssue | null> {
-    const { status, data } = await octokit.rest.issues.get({
+async function fetchIssue(num: number): Promise<ResolvedIssue> {
+    const { data } = await octokit.rest.issues.get({
         owner: REPO_OWNER,
         repo: REPO_NAME,
         issue_number: num,
     });
-
-    if (status !== 200) {
-        return null;
-    }
 
     const closedStateReason = data.state_reason as Exclude<
         typeof data.state_reason,
@@ -79,5 +71,13 @@ async function fetchIssue(num: number): Promise<ResolvedIssue | null> {
 }
 
 export async function fetchReference(num: number): Promise<ResolvedRef | null> {
-    return (await fetchPull(num)) ?? (await fetchIssue(num));
+    try {
+        return await fetchPull(num);
+    } catch {
+        try {
+            return await fetchIssue(num);
+        } catch {
+            return null;
+        }
+    }
 }
