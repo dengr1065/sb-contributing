@@ -1,0 +1,17 @@
+{
+    "name": "sb-contributing",
+    "version": "1.0.0",
+    "main": "src/index.ts",
+    "author": "dengr1065",
+    "license": "GPL-3.0-or-later",
+    "type": "module",
+    "devDependencies": {
+        "@tsconfig/node-lts": "^22.0.1",
+        "@tsconfig/node-ts": "^23.6.1",
+        "@types/node": "^22.13.14"
+    },
+    "dependencies": {
+        "discord.js": "^14.18.0",
+        "octokit": "^4.1.2"
+    }
+}
