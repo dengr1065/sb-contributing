@@ -53,14 +53,15 @@ bot.on("messageCreate", async (msg) => {
     }
 
     const references = extractReferences(msg.cleanContent);
-    if (references.length === 0) {
-        return;
-    }
 
     const resolved = await Promise.all(references.map(fetchReference));
     const formatted = resolved
         .filter((ref) => ref !== null)
         .map(formatReference);
+
+    if (formatted.length === 0) {
+        return;
+    }
 
     const list = unorderedList(formatted);
     const text = `Referenced issues and pull requests:\n${list}`;
